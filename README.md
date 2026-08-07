@@ -23,6 +23,7 @@ validated. You may not publish it looking validated.
 | | |
 |---|---|
 | [`training/01-evaluation`](training/01-evaluation/) | **How to tell whether your eval suite is telling you the truth.** A release gate with three green checks, all of them lying. About an hour, no API key. |
+| [`training/02-monitoring`](training/02-monitoring/) | **How to tell whether your dashboard is telling you the truth.** Three panels, three alerts, nothing firing — and an alert that never can. About an hour, no API key. |
 
 More as it is built. This repository grows; the quality floor does not move.
 
@@ -41,7 +42,7 @@ behind them:
 | 3 | Model selection | — |
 | 4 | Workflow architecture | — |
 | 5 | **Evaluation pipelines** | [not-evidence](https://github.com/jon-lange/not-evidence) — 12 specimens |
-| 6 | **Continuous monitoring** | partial |
+| 6 | **Continuous monitoring** | [not-evidence](https://github.com/jon-lange/not-evidence) — patterns 07, 11 |
 
 The empty rows are the roadmap. A block arrives when there is something true to
 say about it, not when the grid looks incomplete.
