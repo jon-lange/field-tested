@@ -1,0 +1,75 @@
+name: checks
+
+# The proof contract is the only thing keeping this repository from becoming a
+# junk drawer, and until this file existed it ran when somebody remembered.
+# Discipline that depends on remembering is not enforcement.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+# Actions pinned to commit SHAs. A tag is a pointer its owner can move, so
+# pinning to one is a reassuring signal rather than a control.
+jobs:
+  contract:
+    name: every block declares how you know it works
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with: { python-version: "3.12" }
+
+      - name: The contract is live before it is trusted
+        # A checker that passes because it looked at nothing prints what a clean
+        # tree prints. Break the contract on purpose and require the checker to
+        # catch it, then trust the clean run below. Same reasoning as the
+        # denylist canary in not-evidence.
+        run: |
+          set -e
+          python3 scripts/check.py > /dev/null
+          block=$(ls -d training/*/ | head -1)
+          cp "$block/README.md" /tmp/block-readme.bak
+          # Remove the proof declaration. The checker must notice.
+          grep -v '^proof:' /tmp/block-readme.bak > "$block/README.md"
+          if python3 scripts/check.py > /dev/null 2>&1; then
+            cp /tmp/block-readme.bak "$block/README.md"
+            echo "BLOCKED - the contract passed a block with no proof declaration."
+            echo "A clean result from it would mean nothing, so the build stops."
+            exit 1
+          fi
+          cp /tmp/block-readme.bak "$block/README.md"
+          echo "Self-test passed - the contract rejects an undeclared block."
+
+      - name: Every block declares how you know it works
+        run: python3 scripts/check.py
+
+  labs:
+    name: every lab runs, and lies as designed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with: { python-version: "3.12" }
+
+      - name: Module 01 — the gate reports green, the diagnosis finds three
+        # A lab whose premise has broken is worse than a lab that fails: the
+        # exercise still reads as if it works. So the green result is asserted
+        # rather than assumed, and so is what the diagnosis finds under it.
+        run: |
+          set -e
+          cd training/01-evaluation/lab && python3 gate.py | tee /tmp/gate.txt
+          grep -q "all checks green" /tmp/gate.txt
+          cd ../solution && python3 diagnose.py | tee /tmp/diag.txt
+          grep -q "VACUOUS" /tmp/diag.txt
+          grep -q "NO SIGNAL" /tmp/diag.txt
+          grep -qE "[0-9]+\.[0-9]% of the weighting space reverses" /tmp/diag.txt
+
+      - name: Module 02 — the dashboard reports green, the diagnosis finds three
+        run: |
+          set -e
+          cd training/02-monitoring/lab && python3 dashboard.py | tee /tmp/dash.txt
+          grep -q "all panels green, no alerts firing" /tmp/dash.txt
+          cd ../solution && python3 diagnose.py | tee /tmp/diag2.txt
+          grep -q "DEAD" /tmp/diag2.txt
+          grep -q "of traffic" /tmp/diag2.txt
+          grep -q "on no panel, no alert" /tmp/diag2.txt

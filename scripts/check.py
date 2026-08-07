@@ -35,6 +35,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PROOF = {"measured", "tested", "demo", "unproven"}
 
+# Derived from the interpreter rather than typed, so it cannot go stale against
+# the Python a reader actually has. Falls back to a hand list on interpreters
+# that do not expose it.
+try:
+    STDLIB = set(sys.stdlib_module_names)  # 3.10+
+except AttributeError:  # pragma: no cover
+    STDLIB = {"__future__", "sys", "os", "re", "json", "pathlib", "subprocess",
+              "itertools", "dataclasses", "contextlib", "typing", "collections",
+              "math", "textwrap", "argparse", "wave", "html"}
+
 
 def frontmatter(text: str) -> dict:
     if not text.startswith("---"):
@@ -120,6 +130,27 @@ def main() -> int:
 
         if rel not in index:
             problems.append(f"{rel}: not listed in README.md — published and unfindable")
+
+        # Every block promises it runs with nothing installed. A stray import
+        # makes that false for a reader on a clean machine, and it is the only
+        # promise these modules make about running at all.
+        #
+        # Local modules are not dependencies: the labs import their own
+        # `subject`, `gate`, `telemetry`. A first pass flagged all of those and
+        # would have taught its author to ignore it, which is how a rule that
+        # fires on innocent input stops being a rule.
+        local = {p.stem for p in block.rglob("*.py")}
+        for src in sorted(block.rglob("*.py")):
+            for line in src.read_text().splitlines():
+                m = re.match(r"\s*(?:from|import)\s+([\w.]+)", line)
+                if not m:
+                    continue
+                top = m.group(1).split(".")[0]
+                if top in local or top in STDLIB:
+                    continue
+                problems.append(
+                    f"{rel}: {src.relative_to(block).as_posix()} imports {top!r}, "
+                    "which is neither standard library nor part of this block")
 
     print(f"  checked {checked} block(s)")
     if problems:
