@@ -64,6 +64,16 @@ jobs:
           grep -q "NO SIGNAL" /tmp/diag.txt
           grep -qE "[0-9]+\.[0-9]% of the weighting space reverses" /tmp/diag.txt
 
+      - name: Module 03 — every answer cited, the diagnosis finds three
+        run: |
+          set -e
+          cd training/03-data-inputs/lab && python3 ask.py | tee /tmp/ask.txt
+          grep -q "4 of 4 answered" /tmp/ask.txt
+          cd ../solution && python3 diagnose.py | tee /tmp/diag3.txt
+          grep -q "identical" /tmp/diag3.txt
+          grep -q "cuts a word in half" /tmp/diag3.txt
+          grep -q "NO SOURCE" /tmp/diag3.txt
+
       - name: Module 02 — the dashboard reports green, the diagnosis finds three
         run: |
           set -e

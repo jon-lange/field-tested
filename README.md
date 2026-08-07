@@ -24,6 +24,7 @@ validated. You may not publish it looking validated.
 |---|---|
 | [`training/01-evaluation`](training/01-evaluation/) | **How to tell whether your eval suite is telling you the truth.** A release gate with three green checks, all of them lying. About an hour, no API key. |
 | [`training/02-monitoring`](training/02-monitoring/) | **How to tell whether your dashboard is telling you the truth.** Three panels, three alerts, nothing firing — and an alert that never can. About an hour, no API key. |
+| [`training/03-data-inputs`](training/03-data-inputs/) | **How to tell whether what reaches the model is what you think.** Four cited answers, three of them wrong — including one citing three sources that are one document. About an hour, no API key. |
 
 More as it is built. This repository grows; the quality floor does not move.
 
@@ -37,7 +38,7 @@ behind them:
 
 | | Dimension | Evidence |
 |---|---|---|
-| 1 | Data inputs | — |
+| 1 | Data inputs | [module 03](training/03-data-inputs/) — demonstrated |
 | 2 | Prompt engineering | — |
 | 3 | Model selection | — |
 | 4 | Workflow architecture | — |
