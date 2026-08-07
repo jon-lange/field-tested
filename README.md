@@ -25,6 +25,9 @@ validated. You may not publish it looking validated.
 | [`training/01-evaluation`](training/01-evaluation/) | **How to tell whether your eval suite is telling you the truth.** A release gate with three green checks, all of them lying. About an hour, no API key. |
 | [`training/02-monitoring`](training/02-monitoring/) | **How to tell whether your dashboard is telling you the truth.** Three panels, three alerts, nothing firing — and an alert that never can. About an hour, no API key. |
 | [`training/03-data-inputs`](training/03-data-inputs/) | **How to tell whether what reaches the model is what you think.** Four cited answers, three of them wrong — including one citing three sources that are one document. About an hour, no API key. |
+| [`training/04-prompting`](training/04-prompting/) | **How to tell whether your prompt really improved.** v2 beats v1 by 4.9% and collapses one input class from 80% to 10%. About 45 minutes, no API key. |
+| [`training/05-model-selection`](training/05-model-selection/) | **How to tell whether two models are interchangeable.** Three candidates inside 0.7%, one scoring 41% where the others score 90%. About 45 minutes, no API key. |
+| [`training/06-workflow`](training/06-workflow/) | **How to tell what your pipeline actually did.** Five stages, all green — one failed and retried, one fell back silently, one did nothing. About 45 minutes, no API key. |
 
 More as it is built. This repository grows; the quality floor does not move.
 
@@ -39,14 +42,16 @@ behind them:
 | | Dimension | Evidence |
 |---|---|---|
 | 1 | Data inputs | [module 03](training/03-data-inputs/) — demonstrated |
-| 2 | Prompt engineering | — |
-| 3 | Model selection | — |
-| 4 | Workflow architecture | — |
+| 2 | Prompt engineering | [module 04](training/04-prompting/) — demonstrated |
+| 3 | Model selection | [module 05](training/05-model-selection/) — demonstrated |
+| 4 | Workflow architecture | [module 06](training/06-workflow/) — demonstrated |
 | 5 | **Evaluation pipelines** | [not-evidence](https://github.com/jon-lange/not-evidence) — 12 specimens |
 | 6 | **Continuous monitoring** | [not-evidence](https://github.com/jon-lange/not-evidence) — patterns 07, 11 |
 
-The empty rows are the roadmap. A block arrives when there is something true to
-say about it, not when the grid looks incomplete.
+All six now carry a block. Two are **measured** — a specimen produced the figure
+and ships the harness. Four are **demonstrated**: the failure is real and
+runnable, but nothing here measured how often it occurs, and the frontmatter
+says so rather than letting the grid imply otherwise.
 
 ---
 

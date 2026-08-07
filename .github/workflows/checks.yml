@@ -74,6 +74,24 @@ jobs:
           grep -q "cuts a word in half" /tmp/diag3.txt
           grep -q "NO SOURCE" /tmp/diag3.txt
 
+      - name: Modules 04-06 — each reports success, each diagnosis finds three
+        run: |
+          set -e
+          cd training/04-prompting/lab && python3 compare.py | tee /tmp/a.txt
+          grep -q "v2 wins" /tmp/a.txt
+          cd ../solution && python3 diagnose.py | tee /tmp/b.txt
+          grep -q "collapse" /tmp/b.txt && grep -q "instruction with no test" /tmp/b.txt
+          cd ../../05-model-selection/lab && python3 choose.py | tee /tmp/c.txt
+          grep -q "Recommend" /tmp/c.txt
+          cd ../solution && python3 diagnose.py | tee /tmp/d.txt
+          grep -q "not 0.7%" /tmp/d.txt && grep -q "declines" /tmp/d.txt
+          cd ../../06-workflow/lab && python3 run.py | tee /tmp/e.txt
+          grep -q "pipeline SUCCESS" /tmp/e.txt
+          cd ../solution && python3 diagnose.py | tee /tmp/f.txt
+          grep -q "before success" /tmp/f.txt
+          grep -q "fallback" /tmp/f.txt
+          grep -q "DEDUPE_ENABLED=False" /tmp/f.txt
+
       - name: Module 02 — the dashboard reports green, the diagnosis finds three
         run: |
           set -e
